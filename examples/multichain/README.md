@@ -1,50 +1,107 @@
-# React + TypeScript + Vite
+# MetaMask Multichain SDK Example
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application demonstrating how to integrate and use the MetaMask Multichain SDK to interact with multiple blockchain networks.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Connect to MetaMask across multiple networks
+- Switch between Ethereum and Linea networks
+- Sign messages using the connected wallet
+- Fetch blockchain data (latest block numbers)
 
-## Expanding the ESLint configuration
+## Prerequisites
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- Node.js
+- pnpm
+- MetaMask extension installed in your browser
+- Local copy of the MetaMask Multichain SDK
 
-- Configure the top-level `parserOptions` property like this:
+## Setup
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clone the repository
+2. Install dependencies:
+```bash
+pnpm install
+```
+3. Create a `local_modules` directory and add the MetaMask Multichain SDK
+
+## Development
+
+```bash
+pnpm dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Implementation Details
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Provider Setup
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
+```typescript
+// src/multichain/provider.tsx
+import { createContext, type ReactNode, useMemo } from 'react';
+import { MetamaskMultichain } from '@metamask/sdk-multichain';
+
+export const MultichainContext = createContext<MetamaskMultichain | null>(null);
+
+export const MultichainProvider = ({ children }: { children: ReactNode }) => {
+  const client = useMemo(() => new MetamaskMultichain(), []);
+  return (
+    <MultichainContext.Provider value={client}>
+      {children}
+    </MultichainContext.Provider>
+  );
+};
+```
+
+### Usage Example
+
+```typescript
+// Connect to MetaMask
+const connected = await client.connect({ extensionId: EXTENSION_ID });
+
+// Create a session
+const session = await client.createSession({
+  requiredScopes: {
+    "eip155:1": {
+      methods: [],
+      notifications: [],
+    },
+    "eip155:59144": {
+      methods: [],
+      notifications: [],
+    },
   },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
+});
+
+// Sign a message
+await client.invokeMethod({
+  scope: "eip155:1",
+  request: {
+    method: "personal_sign",
+    params: [message, address],
   },
-})
+});
+
+// Fetch block number
+await client.invokeMethod({
+  scope: network,
+  request: {
+    method: "eth_blockNumber",
+    params: [],
+  },
+});
+```
+
+## Available Networks
+
+- Ethereum (eip155:1)
+- Linea (eip155:59144)
+
+## Project Structure (relevant files)
+
+```
+src/
+  multichain/           # SDK integration
+    hooks.ts           # React hooks for SDK access
+    provider.tsx       # SDK context provider
+  constants.tsx        # Network configurations
 ```

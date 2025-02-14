@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, type FC, useRef } from 'react';
+import { createContext, type ReactNode, type FC, useMemo } from 'react';
 import { MetamaskMultichain } from '@metamask/sdk-multichain';
 
 
@@ -9,10 +9,10 @@ type Props = {
 }
 
 export const MultichainProvider: FC<Props> = ({ children }) => {
-	const client = useRef<MetamaskMultichain>(new MetamaskMultichain());
+	const client = useMemo(() => new MetamaskMultichain(), []);
 
 	return (
-		<MultichainContext.Provider value={client.current}>
+		<MultichainContext.Provider value={client}>
 			{children}
 		</MultichainContext.Provider>
 	);
