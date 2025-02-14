@@ -9,7 +9,10 @@ type NetworkDropdownProps = {
 	onNetworkChange: (value: string) => void;
 };
 
-export const NetworkDropdown = ({ network, onNetworkChange }: NetworkDropdownProps) => {
+export const NetworkDropdown = ({
+	network,
+	onNetworkChange,
+}: NetworkDropdownProps) => {
 	return (
 		<NativeSelectRoot size="lg" width="150px">
 			<NativeSelectField
