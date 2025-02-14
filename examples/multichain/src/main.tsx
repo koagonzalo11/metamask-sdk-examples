@@ -6,12 +6,12 @@ import { MultichainProvider } from "./multichain/provider.tsx";
 import { Toaster } from "./components/ui/toaster";
 
 createRoot(document.getElementById("root")!).render(
-	<StrictMode>
-		<ChakraProvider>
-			<MultichainProvider>
-				<Toaster />
-				<App />
-			</MultichainProvider>
-		</ChakraProvider>
-	</StrictMode>,
+  <StrictMode>
+    <ChakraProvider>
+      <MultichainProvider>
+        <Toaster />
+        <App />
+      </MultichainProvider>
+    </ChakraProvider>
+  </StrictMode>,
 );

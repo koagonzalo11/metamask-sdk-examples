@@ -4,15 +4,15 @@ import { MetamaskMultichain } from "@metamask/sdk-multichain";
 export const MultichainContext = createContext<MetamaskMultichain | null>(null);
 
 type Props = {
-	children: ReactNode;
+  children: ReactNode;
 };
 
 export const MultichainProvider: FC<Props> = ({ children }) => {
-	const client = useMemo(() => new MetamaskMultichain(), []);
+  const client = useMemo(() => new MetamaskMultichain(), []);
 
-	return (
-		<MultichainContext.Provider value={client}>
-			{children}
-		</MultichainContext.Provider>
-	);
+  return (
+    <MultichainContext.Provider value={client}>
+      {children}
+    </MultichainContext.Provider>
+  );
 };
